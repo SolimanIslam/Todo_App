@@ -1,3 +1,4 @@
+import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_list/controller/task_controller.dart';
@@ -96,23 +97,33 @@ class HomePage extends StatelessWidget {
                       itemCount: controller.numberOfTasks,
                       itemBuilder: (context, index) {
                         final task = controller.getTasks[index];
-                        return ListTile(
-                          onLongPress: () {
-                            controller.removeTask(task);
+                        return Dismissible(
+                          key: Key(const Uuid().v4()),
+                          background: Container(color: Colors.blue.shade700),
+                          onDismissed: (direction) {
+                            if (direction == DismissDirection.endToStart) {
+                              controller
+                                  .removeTask(task); // Remove task on swipe
+                            }
                           },
-                          leading: Text(
-                            task.taskName,
-                            style: TextStyle(
-                                decoration: task.taskStatus
-                                    ? TextDecoration.lineThrough
-                                    : null),
-                          ),
-                          trailing: Checkbox(
-                            activeColor: Colors.lightBlueAccent,
-                            onChanged: (bool? value) {
-                              controller.toggleTask(task);
+                          child: ListTile(
+                            onLongPress: () {
+                              controller.removeTask(task);
                             },
-                            value: task.taskStatus,
+                            leading: Text(
+                              task.taskName,
+                              style: TextStyle(
+                                  decoration: task.taskStatus
+                                      ? TextDecoration.lineThrough
+                                      : null),
+                            ),
+                            trailing: Checkbox(
+                              activeColor: Colors.lightBlueAccent,
+                              onChanged: (bool? value) {
+                                controller.toggleTask(task);
+                              },
+                              value: task.taskStatus,
+                            ),
                           ),
                         );
                       });

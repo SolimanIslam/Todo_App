@@ -107,6 +107,12 @@ class _AddTaskPageState extends State<AddTaskPage> with WidgetsBindingObserver {
             onChanged: (val) {
               newTaskTitle = val;
             },
+            onSubmitted: (val) {
+              if (newTaskTitle != null) {
+                context.read<TasksController>().addTask(newTaskTitle!);
+                Navigator.pop(context);
+              }
+            },
           ),
           TextButton(
               onPressed: () {
